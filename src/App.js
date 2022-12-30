@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './App.css';
+import { Toaster } from 'react-hot-toast';
+import Home from './components/Home/Home';
 import Signin from './components/Signin/Signin';
 import Signup from './components/Signup/Signup';
 import Main from './layout/Main';
@@ -11,6 +13,10 @@ function App() {
       path: '/',
       element: <Main></Main>,
       children: [
+        {
+          path: '/',
+          element: <Home></Home>
+        },
         {
           path: '/signin',
           element: <Signin></Signin>
@@ -25,9 +31,10 @@ function App() {
   ])
 
   return (
-    <RouterProvider router={router}>
-
-    </RouterProvider>
+    <div>
+      <RouterProvider router={router}></RouterProvider>
+      <Toaster></Toaster>
+    </div>
   );
 }
 
