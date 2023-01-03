@@ -13,8 +13,8 @@ const Signup = () => {
     const [createdUserEmail, setCreatedUserEmail] = useState('');
 
     // img hosting key 
-    const imgHostingKey = process.env.REACT_APP_img_hosting_key;
-    // const imgHostingKey = "24bc95d0ef3bcdb20b0506314b5bbc84";
+    // const imgHostingKey = process.env.REACT_APP_img_hosting_key;
+    const imgHostingKey = "24bc95d0ef3bcdb20b0506314b5bbc84";
 
     const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ const Signup = () => {
             .then(res => res.json())
             .then(imgData => {
                 if (imgData.success) {
-                    console.log(imgData.data.url);
+                    // console.log(imgData.data.url);
                     const user = {
                         first_name: first_name,
                         last_name: last_name,
@@ -66,7 +66,7 @@ const Signup = () => {
                     }
 
 
-                    console.log(user)
+                    // console.log(user)
 
                     // save user info to database 
                     fetch('http://localhost:5000/users', {
@@ -79,7 +79,7 @@ const Signup = () => {
                     })
                         .then(res => res.json())
                         .then(result => {
-                            console.log(result);
+                            // console.log(result);
                             toast.success(`user is added successfully`);
                             // navigate('/dashboard/seller/products');
                         })
@@ -94,7 +94,7 @@ const Signup = () => {
         googleSignIn()
             .then(result => {
                 const user = result.user;
-                console.log(user);
+                // console.log(user);
                 // saveUserByGoogle(user.displayName, user.email);
                 toast.success("SignUp successfully");
                 navigate('/');

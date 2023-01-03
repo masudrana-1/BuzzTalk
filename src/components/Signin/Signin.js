@@ -1,11 +1,86 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthProvider';
 
 const Signin = () => {
 
+    const { signIn, googleSignIn } = useContext(AuthContext);
 
     const { register, formState: { errors }, handleSubmit } = useForm();
+
+    const [loginUserEmail, setLoginUserEmail] = useState('');
+
+    const navigate = useNavigate();
+
+    const handleLogin = data => {
+
+        // ager login error reset 
+        // setLoginError('');
+
+        signIn(data.email, data.password)
+            .then(result => {
+                const user = result.user;
+                // console.log(user);
+
+                setLoginUserEmail(user.email);
+
+                // navigate(from, { replace: true });
+                navigate('/');
+                toast.success('Log In Successfully');
+            })
+            .catch(error => {
+                console.error(error.message);
+                // setLoginError(error.message);
+                toast.error('Something going wrong');
+            })
+    }
+
+
+    const signInWithGoogle = () => {
+        googleSignIn()
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                // saveUserByGoogle(user.displayName, user.email);
+                toast.success("SignUp successfully");
+                navigate('/');
+                addUserByGoogle(user.displayName, user.email, user.photoURL);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+
+    const addUserByGoogle = (first_name, email, photo) => {
+        const user = {
+            first_name: first_name,
+            last_name: "",
+            email: email,
+            phone: "",
+            gender: "",
+            birthday: "",
+            img: photo
+        };
+        fetch('http://localhost:5000/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(d => {
+
+                if (d.acknowledged) {
+                    // setCreatedUserEmail(user.email);
+                    toast.success('added user successfully')
+                }
+            })
+
+    }
 
     return (
         <div className='flex justify-center items-center'>
@@ -43,7 +118,7 @@ const Signin = () => {
                 <p>New to Arrow Computer <Link to="/signup" className='text-primary'>Create a new account</Link></p>
                 <div className="divider">OR</div>
 
-                <button className='btn btn-outline w-full shadow-lg shadow-red-500/50'>CONTINUE WITH GOOGLE</button>
+                <button onClick={signInWithGoogle} className='btn btn-outline w-full shadow-lg shadow-red-500/50'>CONTINUE WITH GOOGLE</button>
             </div>
         </div>
     );

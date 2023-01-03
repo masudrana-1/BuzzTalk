@@ -1,7 +1,38 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { toast } from 'react-hot-toast';
+import { useQuery } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthProvider';
 
 const Navbar = () => {
+
+    const { user, logOut } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    const handleLogOut = () => {
+        logOut()
+            .then(() => {
+                toast('Log Out', {
+                    icon: '🥺',
+                });
+                navigate('/')
+            })
+            .catch(error => console.error(error))
+    }
+
+
+    const { data: usr = [] } = useQuery({
+        queryKey: ['usr'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/users?email=${user?.email}`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
+    // console.log(user)
+
     return (
         <div className="navbar bg-base-100">
             <div className="navbar-start">
@@ -32,7 +63,7 @@ const Navbar = () => {
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
-                            <img src="https://placeimg.com/80/80/people" />
+                            <img src={usr[0]?.img} />
                         </div>
                     </label>
                     <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
@@ -41,7 +72,9 @@ const Navbar = () => {
                                 View Profile
                             </Link>
                         </li>
-                        <li><Link>Logout</Link></li>
+                        {
+                            user?.uid && <li><Link onClick={handleLogOut}>Logout</Link></li>
+                        }
                     </ul>
                 </div>
             </div>
