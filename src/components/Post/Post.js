@@ -48,7 +48,7 @@ const Post = () => {
     let hours = twelveHours();
     let minutes = myDate.getMinutes();
 
-    let currentTime = `${hours}:${minutes} ${amOrPm}`;
+    let currentTime = `${hours}:${minutes} ${amOrPm} 🌍`;
 
     // console.log(today + ' ' + currentTime);
 
@@ -57,7 +57,8 @@ const Post = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const post = event.target.post.value;
+        const form = event.target;
+        const post = form.post.value;
 
         console.log(post);
 
@@ -80,6 +81,7 @@ const Post = () => {
             .then(res => res.json())
             .then(result => {
                 // console.log(result);
+                form.reset();
                 toast.success(`Post is added successfully`);
                 refetch();
                 // navigate('/dashboard/seller/products');
