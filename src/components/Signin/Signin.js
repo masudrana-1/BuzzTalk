@@ -19,12 +19,14 @@ const Signin = () => {
         // ager login error reset 
         // setLoginError('');
 
-        signIn(data.email, data.password)
+        console.log(data);
+
+        signIn(data?.email, data?.password)
             .then(result => {
                 const user = result.user;
                 // console.log(user);
 
-                setLoginUserEmail(user.email);
+                setLoginUserEmail(user?.email);
 
                 // navigate(from, { replace: true });
                 navigate('/');
@@ -86,7 +88,7 @@ const Signin = () => {
         <div className='flex justify-center items-center'>
             <div className='w-2/6 p-7'>
                 <h2 className='text-4xl text-center'>Log In</h2>
-                <form onSubmit={handleSubmit()}>
+                <form onSubmit={handleSubmit(handleLogin)}>
                     <div className="form-control w-full ">
                         <label className="label">
                             <span className="label-text">Email</span>

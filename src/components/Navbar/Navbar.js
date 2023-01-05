@@ -44,8 +44,12 @@ const Navbar = () => {
                         <li><Link to="/">Home</Link></li>
                         <li><Link>All post</Link></li>
                         <li><Link>Help</Link></li>
-                        <li><Link to="/signin">Sign in</Link></li>
-                        <li><Link to="/signup">Sign up</Link></li>
+                        {
+                            !user?.uid && <>
+                                <li><Link to="/signin">Sign in</Link></li>
+                                <li><Link to="/signup">Sign up</Link></li>
+                            </>
+                        }
                     </ul>
                 </div>
                 <a className="btn btn-ghost normal-case text-xl">BuzzTalk</a>
@@ -55,8 +59,12 @@ const Navbar = () => {
                     <li><Link to="/">Home</Link></li>
                     <li><Link>All post</Link></li>
                     <li><Link>Help</Link></li>
-                    <li><Link to="/signin">Sign in</Link></li>
-                    <li><Link to="/signup">Sign up</Link></li>
+                    {
+                        !user?.uid && <>
+                            <li><Link to="/signin">Sign in</Link></li>
+                            <li><Link to="/signup">Sign up</Link></li>
+                        </>
+                    }
                 </ul>
             </div>
             <div className="navbar-end">

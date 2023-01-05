@@ -14,8 +14,6 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const google = { name: "masud" }
-
 
 
     const signUp = (email, password) => {
@@ -66,8 +64,7 @@ const AuthProvider = ({ children }) => {
         signIn,
         googleSignIn,
         updateUser,
-        logOut,
-        google
+        logOut
     };
 
     return (

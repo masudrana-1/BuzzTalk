@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
+import { toast } from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { AuthContext } from '../../context/AuthProvider';
+import SinglePost from './SinglePost';
 
 const Post = () => {
 
     const { user } = useContext(AuthContext);
 
-    const { data: usr = [] } = useQuery({
+    const { data: usr = [], } = useQuery({
         queryKey: ['usr'],
         queryFn: async () => {
             const res = await fetch(`http://localhost:5000/users?email=${user?.email}`);
@@ -15,14 +17,42 @@ const Post = () => {
         }
     });
 
-    // console.log(user)
-    // console.log(usr[0])
+    //  to get current date and time 
 
-    const date = new Date();
+    const myDate = new Date();
 
-    console.log(date);
+    let daysList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Aug', 'Oct', 'Nov', 'Dec'];
 
-    const { first_name, last_name, img } = usr[0];
+
+    let date = myDate.getDate();
+    let month = monthsList[myDate.getMonth()];
+    let year = myDate.getFullYear();
+    let day = daysList[myDate.getDay()];
+
+    let today = `${date} ${month} ${year}, ${day}`;
+
+    let amOrPm;
+    let twelveHours = function () {
+        if (myDate.getHours() > 12) {
+            amOrPm = 'PM';
+            let twentyFourHourTime = myDate.getHours();
+            let conversion = twentyFourHourTime - 12;
+            return `${conversion}`
+
+        } else {
+            amOrPm = 'AM';
+            return `${myDate.getHours()}`
+        }
+    };
+    let hours = twelveHours();
+    let minutes = myDate.getMinutes();
+
+    let currentTime = `${hours}:${minutes} ${amOrPm}`;
+
+    // console.log(today + ' ' + currentTime);
+
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -32,14 +62,43 @@ const Post = () => {
         console.log(post);
 
         const postData = {
-            user_firstName: first_name,
-            user_lastName: last_name,
-            user_img: img,
-            date: date
+            user_firstName: usr[0]?.first_name,
+            user_lastName: usr[0]?.last_name,
+            user_img: usr[0]?.img,
+            date: today,
+            time: currentTime,
+            status: post
         }
+        fetch('http://localhost:5000/post', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                // authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify(postData)
+        })
+            .then(res => res.json())
+            .then(result => {
+                // console.log(result);
+                toast.success(`Post is added successfully`);
+                refetch();
+                // navigate('/dashboard/seller/products');
+            })
 
 
     }
+
+
+    const { data: posts = [], refetch } = useQuery({
+        queryKey: ['post'],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/post`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
+    // console.log(posts);
 
     return (
         <div>
@@ -54,6 +113,11 @@ const Post = () => {
                         <input className='btn' type="submit" value="submit"></input>
                     </form>
                 </div>
+            </div>
+            <div className='mt-10'>
+                {
+                    posts?.map(post => <SinglePost key={post?._id} post={post}></SinglePost>)
+                }
             </div>
         </div>
     );
